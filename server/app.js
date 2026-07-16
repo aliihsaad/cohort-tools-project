@@ -1,5 +1,8 @@
 require("dotenv").config();
 
+const cohorts = require("./cohorts.json");
+const students = require("./students.json");
+
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
@@ -32,6 +35,15 @@ app.use(cookieParser());
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
 // ...
+app.get("/docs", (req, res) => {
+  res.sendFile(__dirname + "/views/docs.html");
+});
+app.get("/api/cohorts", (req, res) => {
+  res.json(cohorts);
+});
+app.get("/api/students", (req, res) => {
+  res.json(students);
+});
 app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
