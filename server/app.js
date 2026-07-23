@@ -1,13 +1,12 @@
-require("dotenv").config();
+import "dotenv/config";
+import express from "express";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import connectDB from "./db/index.js";
+import cohortRoutes from "./routes/cohort.routes.js";
+import studentRoutes from "./routes/student.routes.js";
 
-const cohorts = require("./cohorts.json");
-const students = require("./students.json");
-
-const express = require("express");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const connectDB = require("./db");
 const PORT = process.env.PORT || 5005;
 
 // STATIC DATA
@@ -35,17 +34,10 @@ app.use(cookieParser());
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
 // ...
+app.use("/api/cohorts", cohortRoutes);
+app.use("/api/students", studentRoutes);
 app.get("/docs", (req, res) => {
-  res.sendFile(__dirname + "/views/docs.html");
-});
-app.get("/api/cohorts", (req, res) => {
-  res.json(cohorts);
-});
-app.get("/api/students", (req, res) => {
-  res.json(students);
-});
-app.get("/docs", (req, res) => {
-  res.sendFile(__dirname + "/views/docs.html");
+  res.sendFile(import.meta.dirname + "/views/docs.html");
 });
 
 
