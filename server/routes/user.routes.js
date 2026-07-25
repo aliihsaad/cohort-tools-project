@@ -12,9 +12,9 @@ import jwt from "jsonwebtoken" */
 
 const router = express.Router();
 
-router.get("/", getUser);
-router.post("/register", createUser);
-router.post("/login", login);
-router.get("/userVerified", isAuth, userVerified);
+router.get("/api/users/:id", isAuth, getUser);
+router.post("/auth/signup", createUser);
+router.post("/auth/login", login);
+router.get("/auth/verify", isAuth, userVerified);
 
 export default router;

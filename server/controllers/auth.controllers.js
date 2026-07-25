@@ -5,16 +5,35 @@ import isAuth from "../middlewares/isAuth.middleware.js";
 
 
 async function getUser(req, res){
-try {const id = req.params.id
 
- const user = await User.find()
+/* const userVerified = isAuth(req, res, () => {
+  console.log(req.user);  
+  res.status(200).json({ message: "User verified" });
+}); */
+
+const id = req.params.id
+const user = await User.findById(id).select("-password")
+
+
+if(!user){
+res.status(404).json({message:"User not found"})  
+
+}else{
+  
+  try {
+  
+
+
+
   res.status(200).json(user) }catch(error){
 
 console.log(error)
-res.status(500).json({message:"Error getting user"})
-  }
-
+res.status(404).json({message:"Error getting user"})
+  
+  }}
 }
+
+
 
 
 async function createUser(req, res){
@@ -105,7 +124,6 @@ status(200)
 }
 
 function userVerified(req, res){
-
 
 isAuth(req, res, () => {
   console.log(req.user);  

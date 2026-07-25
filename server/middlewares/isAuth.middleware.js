@@ -7,7 +7,7 @@ export default function isAuth(req, res, next) {
       if (err) {
         return res.status(401).json({ message: "Unauthorized - Token invalid" });
       }})
-      req.user = payload;
+      req.user = decoded;
       next();
     }else { res.status(401).json({message: "Token not provided"}); }
   }catch(error){
