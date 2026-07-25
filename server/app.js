@@ -1,14 +1,17 @@
-import connectDB from "./db/index.js";
-import { Router } from "express";
+import "dotenv/config";
 import express from "express";
-import mongoose from "mongoose";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import "dotenv/config";
+import connectDB from "./db/index.js";
+import cohortRoutes from "./routes/cohort.routes.js";
+import studentRoutes from "./routes/student.routes.js";
 
-const PORT = 5005;
+const PORT = process.env.PORT || 5005;
 
+// STATIC DATA
+// Devs Team - Import the provided files with JSON data of students and cohorts here:
+connectDB();
 
 
 // INITIALIZE EXPRESS APP - https://expressjs.com/en/4x/api.html#express
@@ -30,10 +33,10 @@ app.use(cookieParser());
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
 // ...
-app.use(cors({origin: [process.env.CLIENT_ORIGIN]}));
-
+app.use("/api/cohorts", cohortRoutes);
+app.use("/api/students", studentRoutes);
 app.get("/docs", (req, res) => {
-  res.sendFile(__dirname + "/views/docs.html");
+  res.sendFile(import.meta.dirname + "/views/docs.html");
 });
 
 app.get("/api/cohorts", (req, res) => {
