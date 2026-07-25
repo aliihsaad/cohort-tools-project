@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export function isAuth(req, res, next) {
+export default function isAuth(req, res, next) {
   try {if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer" && req.headers.authorization.split(" ")[1]) {
     const token = req.headers.authorization.split(" ")[1];
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
