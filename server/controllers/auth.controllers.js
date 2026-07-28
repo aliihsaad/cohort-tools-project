@@ -5,33 +5,38 @@ import isAuth from "../middlewares/isAuth.middleware.js";
 
 
 async function getUser(req, res){
+  try{
+    const id = req.params.id
+    const user = await User.findById(id).select("-password")
+    if (!user) return res.status(404).json({ message: "User not found"})
 
-/* const userVerified = isAuth(req, res, () => {
-  console.log(req.user);  
-  res.status(200).json({ message: "User verified" });
-}); */
-
-const id = req.params.id
-const user = await User.findById(id).select("-password")
-
-
-if(!user){
-res.status(404).json({message:"User not found"})  
-
-}else{
-  
-  try {
-  
-
-
-
-  res.status(200).json(user) }catch(error){
-
-console.log(error)
-res.status(404).json({message:"Error getting user"})
-  
-  }}
+      res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error getting user"});
+  }
 }
+// const id = req.params.id
+// const user = await User.findById(id).select("-password")
+
+
+// if(!user){
+// res.status(404).json({message:"User not found"})  
+
+// }else{
+  
+//   try {
+  
+
+
+
+//   res.status(200).json(user) }catch(error){
+
+// console.log(error)
+// res.status(404).json({message:"Error getting user"})
+  
+//   }}
+// }
 
 
 
@@ -53,12 +58,12 @@ if (!pwdRegex.test(password)) {
 message: "Password must be 8 chararcters and contain at least one uppercase and one lowercase, a number, and a special character."
 
   })
-  return
+  // return
 }
 
 const foundUser = await User.findOne({ email: email   })
 
-if(!foundUser) { 
+if(foundUser) { 
 
   return res.status(409).json({message: "This user is already taken"})
 }
@@ -73,7 +78,7 @@ name,
 password: hashedPassword, 
 
 })
-res.status(201).json(newUser)
+res.status(201).json({ _id: newUser._id, email: newUser.email, name: newUser.name });
 } catch (error) {
 console.log(error)
 res.status(500).json({message:"Error creating user"})
@@ -102,20 +107,21 @@ return res.status(404).json({message:"User not found"})
       return res.status(401).json({ message: "Password incorrect" })
     }
 
-const token = await jwt.sign(
+const authToken = await jwt.sign(
 {
  email:foundUser.email,
  name:foundUser.name,
- id:foundUser._id,
+ _id:foundUser._id,
 },
 process.env.TOKEN_SECRET, 
 { expiresIn: "24h" }
-)
+);
 
 
 res.
 status(200)
-.json({ token: token, user: foundUser, message: "Logged in successfully" })
+.json({ authToken, user: { id: foundUser._id, email: foundUser.email, name: foundUser.name},
+   message: "Logged in successfully" });
   } catch (error) {
     console.log(error)
     res.status(500).json({message:"Error logging in"})
@@ -125,14 +131,10 @@ status(200)
 
 function userVerified(req, res){
 
-isAuth(req, res, () => {
-  console.log(req.user);  
-  res.status(200).json({ message: "User verified" });
-});
-
+  res.status(200).json(req.user);
 }
 
-export default {getUser, createUser, login, userVerified}
+export {getUser, createUser, login, userVerified}
 
 
   
